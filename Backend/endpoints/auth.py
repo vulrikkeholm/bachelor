@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
-from models.user import User, UserCreate, UserResponse, UserLogin
+from models.user_model import User, CreateUser, UserLogin
 from db.session import get_db
 from passlib.context import CryptContext
 from passlib.hash import argon2
 from datetime import datetime, timedelta
-import jwt
 from config import settings
 import random
 
+router = APIRouter()
 pwd_context = CryptContext(
     schemes=["argon2"],
     argon2__type="ID",        # Use Argon2id variant

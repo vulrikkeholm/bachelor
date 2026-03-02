@@ -3,8 +3,3 @@ from db.session import engine
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
-
-
-#def create_user():
- #   with Session(engine) as session:
-  #      username = 
