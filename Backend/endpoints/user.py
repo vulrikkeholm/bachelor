@@ -4,6 +4,7 @@ from typing import List
 from models.user_model import User, CreateUser
 from db.session import get_db
 from endpoints.auth import pwd_context
+import uuid
 
 router = APIRouter()
 
@@ -24,7 +25,8 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
         user = User(
             email=create_user.email,
             name=create_user.name,
-            password=pwd_context.hash(create_user.password)
+            password=pwd_context.hash(create_user.password),
+            id = uuid.uuid4()
         )
 
         session.add(user)
