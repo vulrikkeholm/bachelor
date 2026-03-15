@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 class Message(table = True):
     id: int = Field(default=None, primary_key=True)
-    sender: int = Field(default=None, foreign_key="user.id")
-    receiver: int = Field(default=None, foreign_key="user.id")
+    sender: str = Field(default=None, foreign_key="user.id")
+    receiver: str = Field(default=None, foreign_key="user.id")
     encrypted_msg: str = Field(default=None)
 
 #Validation models
