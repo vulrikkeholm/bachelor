@@ -1,0 +1,82 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlmodel import Session, select
+from typing import List
+from models.user_model import User, CreateUser
+from db.session import get_db
+from endpoints.auth import pwd_context
+import uuid
+
+router = APIRouter()
+
+@router.post("/signup", tags=["Users"])
+def signup(create_user: CreateUser, session: Session = Depends(get_db)):
+
+    #Create new user and add it to the database
+
+    try:
+        statement = select(User).where(User.email == create_user.email)
+        existing_user = session.exec(statement).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Email already registered"
+            )
+        
+        user = User(
+            email=create_user.email,
+            name=create_user.name,
+            password=pwd_context.hash(create_user.password),
+            id = uuid.uuid4()
+        )
+
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
+
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(
+            status_code=400, detail=f"Error creating user: {str(e)}")
+
+@router.put("/{id}", tags=["Users"])
+def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
+    with Session(get_db) as session:
+        user_from_db = session.exec(select(User).where(User.id == id)).first()
+        updated_user_info = new_user.model.dump(exclude_unset = True)
+        user_from_db.sqlmodel_update(updated_user_info)
+
+        session.add(user_from_db)
+        session.commit()
+        session.refresh(user_from_db)
+
+        return user_from_db
+
+
+
+"""
+def get_current_user(session: Session = Depends(get_db)):
+    user = session.exec(select(User).where(User.email == user.email)).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    return user
+
+
+@router.get("/me", tags=["Users"])
+def get_current_user_info(current_user: User = Depends(get_current_user)):
+    
+    Get the current logged-in user's information.
+    Requires authentication via JWT token.
+    
+    return current_user
+
+
+
+@router.get("/chats", response_model = List[chats], tags = ["Chats"])
+def get_user_chats(current_user: User = Depends(get_current_user), session: Session = Depends(get_db)):
+
+"""
+    
