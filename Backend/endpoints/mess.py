@@ -1,31 +1,63 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from models import MessageCreate
+from models.mess_modul import MessageCreate, Message, MessageResponse
+from db.session import get_db
+from typing import List
 
 router = APIRouter()
 
-messages = []
+#messages = []
 
-@router.post("/messages")
-def send_message(data: MessageCreate):
-    msg = {
-        "sender": data.sender,
-        "receiver": data.receiver,
-        "message": data.message
-    }
+@router.post("/messages", tags = ["messages"])
+def send_message(data: MessageCreate, session: Session = Depends(get_db)):
+    try:
+        new_msg = Message(
+            sender= data.sender,
+            receiver= data.receiver,
+            encrypted_msg= data.message
+        )
     
-    messages.append(msg)
+        #messages.append(new_msg)
 
-    return {"status": "sent"} 
+        session.add(new_msg)
+        session.commit()
+        session.refresh(new_msg)
+
+        return {"status": "sent"} 
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(
+            status_code=400, detail=f"Error creating message: {str(e)}")
 
 
-@router.get("/messages")
-def get_messages(user):
 
-    user_message = []
+@router.get("/messages", tags = ["messages"])
+def get_messages(user: str, session: Session = Depends(get_db) ):
 
-    for msg in messages:
+    #user_message = []
+    try:
+        all_messages = session.exec(select(Message).where(Message.receiver == user)).all()
+        print(all_messages)
+
+        return all_messages
+
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(
+            status_code=400, detail=f"Error retrieving message: {str(e)}") 
+
+'''
+    for msg in :
         if msg["receiver"] == user:
             user_message.append(msg)
 
     return user_message
+
+
+transactions = db.exec(
+            select(Transaction).where(
+                (Transaction.from_id == current_user.id) | (
+                    Transaction.to_id == current_user.id)
+            )
+        ).all()
+'''
