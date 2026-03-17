@@ -45,19 +45,3 @@ def get_messages(user: str, session: Session = Depends(get_db) ):
         session.rollback()
         raise HTTPException(
             status_code=400, detail=f"Error retrieving message: {str(e)}") 
-
-'''
-    for msg in :
-        if msg["receiver"] == user:
-            user_message.append(msg)
-
-    return user_message
-
-
-transactions = db.exec(
-            select(Transaction).where(
-                (Transaction.from_id == current_user.id) | (
-                    Transaction.to_id == current_user.id)
-            )
-        ).all()
-'''
