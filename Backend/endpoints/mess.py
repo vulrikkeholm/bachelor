@@ -3,12 +3,13 @@ from sqlmodel import Session, select
 from models.mess_modul import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
+from sockets import sio
 
 router = APIRouter()
 
 #messages = []
 
-@router.post("/messages", tags = ["messages"])
+@router.post("/", tags = ["messages"])
 def send_message(data: MessageCreate, session: Session = Depends(get_db)):
     try:
         new_msg = Message(
@@ -22,6 +23,14 @@ def send_message(data: MessageCreate, session: Session = Depends(get_db)):
         session.add(new_msg)
         session.commit()
         session.refresh(new_msg)
+        '''
+For at gøre beskeder real time
+        await sio.emit(
+            "new message",
+            new_msg,
+            room=data.receiver
+        )
+        '''
 
         return {"status": "sent"} 
     except Exception as e:
@@ -31,10 +40,10 @@ def send_message(data: MessageCreate, session: Session = Depends(get_db)):
 
 
 
-@router.get("/messages", tags = ["messages"])
+@router.get("/", tags = ["messages"])
 def get_messages(user: str, session: Session = Depends(get_db) ):
 
-    #user_message = []
+    #Der skal tilføjes noget så man kun henter beskeder fra en bestemt chat
     try:
         all_messages = session.exec(select(Message).where(Message.receiver == user)).all()
         print(all_messages)
