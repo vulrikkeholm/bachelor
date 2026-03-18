@@ -1,4 +1,4 @@
-# Bachelor
+# <span style="color:#211a52">AAU Bachelor - Secure Messaging System</span>
 ### Backend
 
 1. Navigate to the backend folder:
