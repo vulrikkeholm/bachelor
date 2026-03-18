@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel
 from db.session import engine
 from models.user_model import User
-from models.mess_modul import Message
+from Backend.models.mess_model import Message
 
 
 def delete_all_tables():

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from models.mess_modul import MessageCreate, Message, MessageResponse
+from Backend.models.mess_model import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
 
@@ -8,7 +8,7 @@ router = APIRouter()
 
 #messages = []
 
-@router.post("/messages", tags = ["messages"])
+@router.post("/", tags = ["messages"])
 def send_message(data: MessageCreate, session: Session = Depends(get_db)):
     try:
         new_msg = Message(
@@ -31,7 +31,7 @@ def send_message(data: MessageCreate, session: Session = Depends(get_db)):
 
 
 
-@router.get("/messages", tags = ["messages"])
+@router.get("/", tags = ["messages"])
 def get_messages(user: str, session: Session = Depends(get_db) ):
 
     #user_message = []
