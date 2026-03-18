@@ -1,17 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
-from models.user_model import User, CreateUser
+from models.user_model import User, CreateUser, UserLogin
 from db.session import get_db
-from endpoints.auth import pwd_context
+from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
+from passlib.context import CryptContext
+from passlib.hash import argon2
 import uuid
+import pyotp
+
 
 router = APIRouter()
+
 
 @router.post("/signup", tags=["Users"])
 def signup(create_user: CreateUser, session: Session = Depends(get_db)):
 
-    #Create new user and add it to the database
 
     try:
         statement = select(User).where(User.email == create_user.email)
@@ -22,22 +26,28 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
                 detail="Email already registered"
             )
         
+        secret_key = secret_key_generator()
+
+        totp_uri = generate_otp_uri(secret_key, create_user.name)
+
         user = User(
             email=create_user.email,
             name=create_user.name,
             password=pwd_context.hash(create_user.password),
-            id = uuid.uuid4()
+            otp_secret=secret_key,
         )
 
         session.add(user)
         session.commit()
         session.refresh(user)
-        return user
+
+        return {"user" : user, "totp_uri": totp_uri}
 
     except Exception as e:
         session.rollback()
         raise HTTPException(
             status_code=400, detail=f"Error creating user: {str(e)}")
+
 
 @router.put("/{id}", tags=["Users"])
 def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
