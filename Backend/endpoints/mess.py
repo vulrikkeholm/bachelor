@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from models.mess_modul import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
-from sockets import sio
+#from sockets import sio
 
 router = APIRouter()
 
