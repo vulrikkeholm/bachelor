@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from models.mess_modul import MessageCreate, Message, MessageResponse
+from Backend.models.mess_model import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
 #from sockets import sio
