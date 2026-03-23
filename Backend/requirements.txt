@@ -50,7 +50,6 @@ pluggy==1.5.0
 propcache==0.4.1
 psycopg==3.3.3
 psycopg-binary==3.3.3
-psycopg2==2.9.11
 pycparser==3.0
 pydantic==2.12.5
 pydantic-extra-types==2.11.1
