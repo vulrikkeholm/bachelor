@@ -1,4 +1,4 @@
-# Bachelor
+# <span style="color:#211a52">AAU Bachelor - Secure Messaging System</span>
 ### Backend
 
 1. Navigate to the backend folder:
@@ -16,7 +16,7 @@ python -m venv venv
 3. Activate the virtual environment:
 
 ```bash
-source ./venv/bin/activate
+source venv/bin/activate
 ```
 
 4. Install the necessary packages in the virtual environment:
