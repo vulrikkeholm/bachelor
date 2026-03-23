@@ -48,7 +48,7 @@ passlib==1.7.4
 pillow==12.1.0
 pluggy==1.5.0
 propcache==0.4.1
-psycopg2==2.9.11
+psycopg3==3.3
 pycparser==3.0
 pydantic==2.12.5
 pydantic-extra-types==2.11.1
