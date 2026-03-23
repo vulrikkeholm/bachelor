@@ -9,7 +9,7 @@ async def connect():
 
 @sio_client.event
 async def new_message(data):
-    print("New message: {data}")
+    print(f"New message: {data}")
 
 @sio_client.event
 async def disconnect(): 

@@ -14,3 +14,11 @@ sio_server = socketio.AsyncServer(
 @sio_server.event
 async def connect(sid, environ, auth):
     print(f"{sid}: connected")
+
+@sio_server.event
+async def chat(sid, message):
+    await sio_server.emit('chat', {'sid': sid, 'message': message}) #chat is the message type, so the frontend knows what message to display
+
+@sio_server.event
+async def disconnect(sid):
+    print(f"{sid}: disconnected")
