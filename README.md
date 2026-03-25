@@ -38,3 +38,7 @@ uvicorn main:app --reload
 6. Access the backend documentation at:
 
 [http://localhost:8000/docs](http://localhost:8000/docs)
+
+or 
+
+[https://api.smaas.dk/docs](https://api.smaas.dk/docs)
