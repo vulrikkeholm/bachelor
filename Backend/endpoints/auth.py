@@ -10,6 +10,7 @@ from config import settings
 import pyotp
 import qrcode
 import jwt
+import os
 
 security = HTTPBearer()
 
@@ -41,8 +42,12 @@ def read_jwt_token_from_user(
     try:
         payload = jwt.decode(
             credentials.credentials,
-            settings.JWT_SECRET_KEY,
-            algorithms=settings.JWT_ALGORITHM
+            # settings.JWT_SECRET_KEY,
+            # use 47 when pushing to main instead of 45
+            os.environ.get('JWT_SECRET_KEY')
+            # algorithms=settings.JWT_ALGORITHM
+            # use 48 when pushing to main instead of 50
+            algorithms=os.environ.get('JWT_ALGORITHM')
         )
 
         sub_email = payload.get("sub_email")
@@ -121,7 +126,7 @@ def verify_otp_endpoint(otp: str, email: str, session: Session = Depends(get_db)
         print("correct code")
         access_token = create_jwt_token({
             "sub_id": user.id,
-            #"sub_admin": user.admin,
+            "sub_admin": user.admin,
             "sub_email": user.email
             })
         return {"token": access_token, "token_type": "bearer"}
@@ -162,7 +167,7 @@ def create_jwt_token(data_in_token: dict) -> str:
     token_data_dict.update({"exp": expiration})
     encoded_jwt_token = jwt.encode(
         token_data_dict,
-        settings.JWT_SECRET_KEY
+        os.environ.get('JWT_SECRET_KEY')
     )
     return encoded_jwt_token
 
