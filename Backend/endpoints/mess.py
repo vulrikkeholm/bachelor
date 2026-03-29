@@ -7,8 +7,6 @@ from sockets import sio_server
 
 router = APIRouter()
 
-#messages = []
-
 @router.post("/", tags = ["messages"])
 async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
     try:
@@ -18,8 +16,6 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
             encrypted_msg= data.message
         )
     
-        #messages.append(new_msg)
-
         session.add(new_msg)
         session.commit()
         session.refresh(new_msg)

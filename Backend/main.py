@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-
+from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess
 #from socket_server import app_sio  # Socket.IO ASGI app
@@ -19,8 +19,16 @@ fastapi_app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "https://smaas.dk",
+    "https://frontend.smaas.dk",
 ]
+
+fastapi_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
