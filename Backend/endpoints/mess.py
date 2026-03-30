@@ -4,14 +4,16 @@ from models.mess_model import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
 from sockets import sio_server
+
 router = APIRouter()
+
 @router.post("/", tags = ["messages"])
 async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
     try:
         new_msg = Message(
             sender= data.sender,
             receiver= data.receiver,
-            encrypted_msg= data.message
+            message= data.message
         )
     
         session.add(new_msg)
@@ -23,9 +25,9 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
             {
                 "sender": data.sender,
                 "receiver": data.receiver,
-                "encrypted_msg": data.message
-            }
-            #room=data.receiver
+                "message": data.message
+            },
+            room=data.receiver
         )
         return {"status": "sent"} 
     except Exception as e:

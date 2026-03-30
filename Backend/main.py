@@ -17,6 +17,7 @@ origins = [
     "http://localhost:5173",
     "https://frontend.smaas.dk",
 ]
+
 fastapi_app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -24,12 +25,15 @@ fastapi_app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")
+
 @fastapi_app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
 # Wrap FastAPI inside Socket.IO
 app = socketio.ASGIApp(
     socketio_server=sio_server,
