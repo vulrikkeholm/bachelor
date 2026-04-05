@@ -26,11 +26,6 @@ fastapi_app.add_middleware(
     allow_headers=["*"]
 )
 
-origins = [
-    "http://localhost:5173",
-    "https://smaas.dk",
-]
-
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
-from models.user_model import User, CreateUser, UserLogin
+from models.user_model import User, CreateUser, UserLogin, UserResponse
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
 from passlib.context import CryptContext
@@ -13,10 +13,20 @@ import pyotp
 router = APIRouter()
 
 
+@router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
+def get_contacts(session: Session = Depends(get_db)):
+    try:
+        users = session.exec(
+            select(User)
+        ).all()
+        print(users)
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/signup", tags=["Users"])
 def signup(create_user: CreateUser, session: Session = Depends(get_db)):
-
-
     try:
         statement = select(User).where(User.email == create_user.email)
         existing_user = session.exec(statement).first()
