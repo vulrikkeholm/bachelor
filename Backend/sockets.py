@@ -9,16 +9,28 @@ sio_server = socketio.AsyncServer(
 )
 @sio_server.event
 async def connect(sid, environ, auth):
+    #Måske noget user id skal tilføjes, noget sammenhæng med login
     print(f"{sid}: connected")
     await sio_server.emit('join', {'sid': sid})
 
 @sio_server.event
-async def chat(sid, message):
+async def joinRoom(sid, room):
+    await sio_server.enter_room(sid, room)
+    print(f"{sid} joined room {room}")
+
+@sio_server.event
+async def chat(sid, data):
+    room = data["room"]
+    if not room:
+        print(f"No room specified")
+        return
+
     msg = {
         "sid": sid, 
-        "message": message["text"]
+        "text": data["text"],
+        "room": room
     }
-    await sio_server.emit('chat', msg) #chat is the message type, so the frontend knows what message to display
+    await sio_server.emit('chat', msg, room=room) #chat is the message type, so the frontend knows what message to display
 
 @sio_server.event
 async def disconnect(sid):

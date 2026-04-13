@@ -13,7 +13,7 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
         new_msg = Message(
             sender= data.sender,
             receiver= data.receiver,
-            message= data.message
+            encrypted_msg= data.message
         )
     
         session.add(new_msg)
