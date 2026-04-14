@@ -44,7 +44,7 @@ def read_jwt_token_from_user(
             credentials.credentials,
             # settings.JWT_SECRET_KEY,
             # use 47 when pushing to main instead of 45
-            os.environ.get('JWT_SECRET_KEY')
+            os.environ.get('JWT_SECRET_KEY'),
             # algorithms=settings.JWT_ALGORITHM
             # use 48 when pushing to main instead of 50
             algorithms=os.environ.get('JWT_ALGORITHM')
