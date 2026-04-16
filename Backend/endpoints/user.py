@@ -51,7 +51,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
         session.commit()
         session.refresh(user)
 
-        return {"user" : user, "totp_uri": totp_uri}
+        return {"totp_uri": totp_uri}
 
     except Exception as e:
         session.rollback()
