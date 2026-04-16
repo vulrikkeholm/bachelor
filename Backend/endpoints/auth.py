@@ -146,7 +146,7 @@ def generate_otp_uri(secret_key: str, name: str) -> str:
     uri = totp.provisioning_uri(name, issuer_name="SMaaS")
     
     QR_code = qrcode.make(uri)
-    QR_code.save("totp.png")
+    #QR_code.save("totp.png")
 
     return uri
 
