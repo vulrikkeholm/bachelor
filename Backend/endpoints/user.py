@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
-from models.user_model import User, CreateUser, UserLogin, UserResponse
+from pydantic import BaseModel
+from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
 from passlib.context import CryptContext
@@ -11,9 +12,6 @@ import pyotp
 
 
 router = APIRouter()
-
-class OtpUri():
-    totp_uri :str
 
 
 @router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
