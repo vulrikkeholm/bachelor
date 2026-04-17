@@ -28,3 +28,8 @@ class UserResponse(BaseModel):
 
 class OtpUri(BaseModel):
     totp_uri: str
+
+class OtpVerificationModel(BaseModel):
+    email: str
+    otp: str
+
