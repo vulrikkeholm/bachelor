@@ -25,3 +25,6 @@ class UserResponse(BaseModel):
     id: str
     name: str
     email: str
+
+class OtpUri(BaseModel):
+    totp_uri: str
