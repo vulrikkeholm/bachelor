@@ -39,7 +39,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
         
         secret_key = secret_key_generator()
 
-        totp_uri = generate_otp_uri(secret_key, create_user.name)
+        totp_uri: str = generate_otp_uri(secret_key, create_user.name)
 
         user = User(
             email=create_user.email,
