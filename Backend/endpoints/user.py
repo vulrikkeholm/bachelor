@@ -12,6 +12,9 @@ import pyotp
 
 router = APIRouter()
 
+class OtpUri():
+    totp_uri :str
+
 
 @router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
 def get_contacts(session: Session = Depends(get_db)):
@@ -25,7 +28,7 @@ def get_contacts(session: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/signup", tags=["Users"])
+@router.post("/signup", response_model=OtpUri, tags=["Users"])
 def signup(create_user: CreateUser, session: Session = Depends(get_db)):
     try:
         statement = select(User).where(User.email == create_user.email)
@@ -47,11 +50,15 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             otp_secret=secret_key,
         )
 
+        otpUri = OtpUri(
+            totp_uri=totp_uri
+        )
+
         session.add(user)
         session.commit()
         session.refresh(user)
 
-        return totp_uri
+        return otpUri
 
     except Exception as e:
         session.rollback()
