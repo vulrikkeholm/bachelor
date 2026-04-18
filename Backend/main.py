@@ -41,11 +41,3 @@ app = socketio.ASGIApp(
     other_asgi_app=fastapi_app,
     socketio_path="sockets"
 )
-
-app = StarletteCORS(
-    app=app,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
