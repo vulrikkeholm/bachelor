@@ -84,7 +84,7 @@ def read_jwt_token_from_user(
             detail="User not found"
         )
     
-    elif user.id != sub_id | user.admin != sub_admin:
+    elif user.id != sub_id or user.admin != sub_admin:
         raise HTTPException(
             status_code=status.HTTP_418_IM_NOT_A_TEAPOT,
             detail="I'm not a teapot"
