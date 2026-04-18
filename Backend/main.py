@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware as StarletteCORS
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess
 #from socket_server import app_sio  # Socket.IO ASGI app
@@ -39,4 +40,12 @@ app = socketio.ASGIApp(
     socketio_server=sio_server,
     other_asgi_app=fastapi_app,
     socketio_path="sockets"
+)
+
+app = StarletteCORS(
+    app=app,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
