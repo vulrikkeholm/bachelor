@@ -47,7 +47,7 @@ def read_jwt_token_from_user(
             os.environ.get('JWT_SECRET_KEY'),
 
             # algorithms=settings.JWT_ALGORITHM
-            algorithms=os.environ.get('JWT_ALGORITHM')
+            algorithms=[os.environ.get('JWT_ALGORITHM')]
         )
         print("PAYLOAD:", payload)
 
@@ -67,7 +67,7 @@ def read_jwt_token_from_user(
             detail="Token has expired",
         )
     
-    except jwt.JWTError:
+    except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
