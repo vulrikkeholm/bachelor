@@ -45,8 +45,8 @@ def read_jwt_token_from_user(
             credentials.credentials,
             
             # settings.JWT_SECRET_KEY,
-            os.environ.get('JWT_SECRET_KEY'),
-
+            #os.environ.get('JWT_SECRET_KEY'),
+            settings.JWT_SECRET_KEY, 
             # algorithms=settings.JWT_ALGORITHM
             algorithms=[settings.JWT_ALGORITHM]
         )
