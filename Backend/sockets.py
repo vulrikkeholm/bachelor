@@ -5,7 +5,8 @@ sio_server = socketio.AsyncServer(
     cors_allowed_origins=[
         "http://localhost:5173",
         "https://frontend.smaas.dk",
-    ] 
+    ],
+    socketio_path = "sockets"
 )
 @sio_server.event
 async def connect(sid, environ, auth):

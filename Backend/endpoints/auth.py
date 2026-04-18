@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
-from models.user_model import User, CreateUser, UserLogin
+from models.user_model import User, CreateUser, UserLogin, OtpVerificationModel
 from db.session import get_db
 from passlib.context import CryptContext
 from passlib.hash import argon2
@@ -42,11 +42,11 @@ def read_jwt_token_from_user(
     try:
         payload = jwt.decode(
             credentials.credentials,
+            
             # settings.JWT_SECRET_KEY,
-            # use 47 when pushing to main instead of 45
             os.environ.get('JWT_SECRET_KEY'),
+
             # algorithms=settings.JWT_ALGORITHM
-            # use 48 when pushing to main instead of 50
             algorithms=os.environ.get('JWT_ALGORITHM')
         )
 
@@ -110,10 +110,10 @@ def login(user_login: UserLogin, session: Session = Depends(get_db)):
 
 
 @router.post("/verify-otp", tags=["Authentication"])
-def verify_otp_endpoint(otp: str, email: str, session: Session = Depends(get_db)):
+def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Session = Depends(get_db)):
 
     # Verify OTP for a user
-    statement = select(User).where(User.email == email)
+    statement = select(User).where(User.email == otpVerificationModel.email)
     user = session.exec(statement).first()
 
     if not user:
@@ -122,8 +122,9 @@ def verify_otp_endpoint(otp: str, email: str, session: Session = Depends(get_db)
             detail = "User not found"
         )
 
-    if verify_otp(user.otp_secret, otp):
-        print("correct code")
+    if verify_otp(user.otp_secret, otpVerificationModel.otp):
+        
+        print("the code is correct!")
         access_token = create_jwt_token({
             "sub_id": user.id,
             "sub_admin": user.admin,
