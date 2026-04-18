@@ -51,8 +51,8 @@ def read_jwt_token_from_user(
         )
 
         sub_email = payload.get("sub_email")
-        sub_admin = payload.get("admin")
-        sub_id = payload.get("user_id")
+        sub_admin = payload.get("sub_admin")
+        sub_id = payload.get("sub_id")
 
         if sub_email is None:
             raise HTTPException(
