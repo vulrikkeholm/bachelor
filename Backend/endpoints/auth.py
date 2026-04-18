@@ -29,6 +29,7 @@ def read_jwt_token_from_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     session: Session = Depends(get_db)
 ) -> User:
+    print("CREDENTIALS:", credentials)
     
     """
     decoding token claims:
@@ -44,15 +45,16 @@ def read_jwt_token_from_user(
             credentials.credentials,
             
             # settings.JWT_SECRET_KEY,
-            os.environ.get('JWT_SECRET_KEY'),
-
+            #os.environ.get('JWT_SECRET_KEY'),
+            settings.JWT_SECRET_KEY, 
             # algorithms=settings.JWT_ALGORITHM
-            algorithms=os.environ.get('JWT_ALGORITHM')
+            algorithms=[settings.JWT_ALGORITHM]
         )
+        print("PAYLOAD:", payload)
 
         sub_email = payload.get("sub_email")
-        sub_admin = payload.get("admin")
-        sub_id = payload.get("user_id")
+        sub_admin = payload.get("sub_admin")
+        sub_id = payload.get("sub_id")
 
         if sub_email is None:
             raise HTTPException(
@@ -61,12 +63,14 @@ def read_jwt_token_from_user(
             )
         
     except jwt.ExpiredSignatureError:
+        print("TOKEN EXPIRED")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
         )
     
-    except jwt.JWTError:
+    except jwt.PyJWTError as e:
+        print("JWT ERROR:", e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -80,7 +84,7 @@ def read_jwt_token_from_user(
             detail="User not found"
         )
     
-    elif user.id != sub_id | user.admin != sub_admin:
+    elif user.id != sub_id or user.admin != sub_admin:
         raise HTTPException(
             status_code=status.HTTP_418_IM_NOT_A_TEAPOT,
             detail="I'm not a teapot"

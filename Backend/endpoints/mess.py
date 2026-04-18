@@ -25,7 +25,7 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db), 
         await sio_server.emit(
             "new_message",
             {
-                "sender": data.sender,
+                "sender": current_user.id,
                 "receiver": data.receiver,
                 "message": data.message
             },
