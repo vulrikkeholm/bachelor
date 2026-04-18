@@ -69,8 +69,8 @@ def read_jwt_token_from_user(
             detail="Token has expired",
         )
     
-    except jwt.PyJWTError:
-        print("JWT ERROR:")
+    except jwt.PyJWTError as e:
+        print("JWT ERROR:", e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
