@@ -29,6 +29,7 @@ def read_jwt_token_from_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     session: Session = Depends(get_db)
 ) -> User:
+    print("CREDENTIALS:", credentials)
     
     """
     decoding token claims:
