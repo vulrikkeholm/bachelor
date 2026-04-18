@@ -4,14 +4,16 @@ from models.mess_model import MessageCreate, Message, MessageResponse
 from db.session import get_db
 from typing import List
 from sockets import sio_server
+from endpoints.auth import read_jwt_token_from_user
+from models.user_model import User
 
 router = APIRouter()
 
 @router.post("/", tags = ["messages"])
-async def send_message(data: MessageCreate, session: Session = Depends(get_db)):
+async def send_message(data: MessageCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
     try:
         new_msg = Message(
-            sender= data.sender,
+            sender= current_user.id,
             receiver= data.receiver,
             encrypted_msg= data.message
         )
