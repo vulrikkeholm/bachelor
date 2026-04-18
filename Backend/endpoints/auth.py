@@ -49,6 +49,7 @@ def read_jwt_token_from_user(
             # algorithms=settings.JWT_ALGORITHM
             algorithms=os.environ.get('JWT_ALGORITHM')
         )
+        print("PAYLOAD:", payload)
 
         sub_email = payload.get("sub_email")
         sub_admin = payload.get("sub_admin")
