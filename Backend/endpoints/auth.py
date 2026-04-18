@@ -63,12 +63,14 @@ def read_jwt_token_from_user(
             )
         
     except jwt.ExpiredSignatureError:
+        print("TOKEN EXPIRED")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
         )
     
     except jwt.PyJWTError:
+        print("JWT ERROR:")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
