@@ -9,6 +9,7 @@ import socketio
 from db.session import get_db
 from models.user_model import User
 from sqlmodel import Session, select
+from endpoints.public_keys import router as public_keys_router
 fastapi_app = FastAPI()
 #FastAPI app gets mounted to sockets (or other way around?), so that all the traffic FastAPI gets is routed through socketio
 #app.mount('/', app=sio_app) #Want it mounted at the root
@@ -30,6 +31,7 @@ fastapi_app.add_middleware(
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")
+fastapi_app.include_router(public_keys_router, prefix="/keys")
 
 @fastapi_app.on_event("startup")
 def on_startup():
