@@ -29,14 +29,6 @@ fastapi_app.add_middleware(
     allow_headers=["*"]
 )
 
-app = StarletteCORS(
-    app,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
-
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")
@@ -52,4 +44,12 @@ app = socketio.ASGIApp(
     socketio_server=sio_server,
     other_asgi_app=fastapi_app,
     socketio_path="sockets"
+)
+
+app = StarletteCORS(
+    app,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
