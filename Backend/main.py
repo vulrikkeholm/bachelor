@@ -2,12 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.cors import CORSMiddleware as StarletteCORS
 from db.base import create_db_and_tables
-from endpoints import user, auth, mess
+from endpoints import user, auth, mess, keys
 #from socket_server import app_sio  # Socket.IO ASGI app
 from sockets  import sio_server
 import socketio
 from db.session import get_db
 from models.user_model import User
+from models.keys_model import Keys
 from sqlmodel import Session, select
 from endpoints.public_keys import router as public_keys_router
 fastapi_app = FastAPI()
@@ -31,7 +32,8 @@ fastapi_app.add_middleware(
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")
-fastapi_app.include_router(public_keys.router, prefix="/keys")
+fastapi_app.include_router(keys.router, prefix="/aes-keys")
+fastapi_app.include_router(public_keys_router, prefix="/keys")
 
 @fastapi_app.on_event("startup")
 def on_startup():
