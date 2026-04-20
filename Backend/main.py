@@ -31,7 +31,7 @@ fastapi_app.add_middleware(
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
 fastapi_app.include_router(mess.router, prefix="/messages")
-fastapi_app.include_router(public_keys_router, prefix="/keys")
+fastapi_app.include_router(public_keys.router, prefix="/keys")
 
 @fastapi_app.on_event("startup")
 def on_startup():
