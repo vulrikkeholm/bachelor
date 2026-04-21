@@ -21,13 +21,13 @@ origins = [
     "https://frontend.smaas.dk",
 ]
 
-#fastapi_app.add_middleware(
- #   CORSMiddleware,
-  #  allow_origins=origins,
-   # allow_credentials=True,
-    #allow_methods=["*"],
-    #allow_headers=["*"]
-#)
+fastapi_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 fastapi_app.include_router(user.router, prefix="/users")
 fastapi_app.include_router(auth.router, prefix="/auth")
@@ -46,10 +46,3 @@ app = socketio.ASGIApp(
     socketio_path="sockets"
 )
 
-app = StarletteCORS(
-    app,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
