@@ -131,7 +131,7 @@ def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Ses
         print("the code is correct!")
         access_token = create_jwt_token({
             "sub_id": user.id,
-            "sub_admin": user.admin,
+            "sub_admin": bool(user.admin),
             "sub_email": user.email
             })
         return {"token": access_token, "token_type": "bearer"}
