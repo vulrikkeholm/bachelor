@@ -172,7 +172,7 @@ def create_jwt_token(data_in_token: dict) -> str:
     token_data_dict.update({"exp": expiration})
     encoded_jwt_token = jwt.encode(
         token_data_dict,
-        os.environ.get('JWT_SECRET_KEY')
+        settings.JWT_SECRET_KEY
     )
     return encoded_jwt_token
 
