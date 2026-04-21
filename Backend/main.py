@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.cors import CORSMiddleware as StarletteCORS
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess, keys
 #from socket_server import app_sio  # Socket.IO ASGI app
