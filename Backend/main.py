@@ -39,9 +39,10 @@ def on_startup():
     create_db_and_tables()
 
 # Wrap FastAPI inside Socket.IO
-app = socketio.ASGIApp(
+spcket_app = socketio.ASGIApp(
     socketio_server=sio_server,
-    other_asgi_app=fastapi_app,
     socketio_path="sockets"
 )
+
+app.mount("/ws", socket_app)
 
