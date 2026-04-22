@@ -44,5 +44,5 @@ spcket_app = socketio.ASGIApp(
     socketio_path="sockets"
 )
 
-app.mount("/ws", socket_app)
+fastapi_app.mount("/ws", socket_app)
 
