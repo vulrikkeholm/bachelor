@@ -12,5 +12,5 @@ ENV JWT_ALGORITHM="HS256"
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "uvicorn","main:app", "--host", "0.0.0.0"]
+CMD [ "uvicorn","main:socket_app", "--host", "0.0.0.0"]
 
