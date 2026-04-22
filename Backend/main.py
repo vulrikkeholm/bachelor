@@ -42,7 +42,8 @@ def on_startup():
 # Wrap FastAPI inside Socket.IO
 socket_app = socketio.ASGIApp(
     socketio_server=sio_server,
-    socketio_path="sockets"
+    other_asgi_app=app,       
+    socketio_path="/ws/sockets" 
 )
 
 app.mount("/ws", socket_app)
