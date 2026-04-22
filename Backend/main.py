@@ -43,8 +43,8 @@ def on_startup():
 socket_app = socketio.ASGIApp(
     socketio_server=sio_server,
     other_asgi_app=app,       
-    socketio_path="/ws/sockets" 
+    socketio_path="sockets" 
 )
 
-app.mount("/ws", socket_app)
+#app.mount("/ws", socket_app)
 
