@@ -1,5 +1,4 @@
 from sqlmodel import Session, create_engine
-from config import settings
 import os
 
 #Use 6 when running locally
