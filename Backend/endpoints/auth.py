@@ -1,3 +1,5 @@
+from Backend.db import session
+from Backend.models.keys_model import Keys
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
@@ -47,7 +49,6 @@ def read_jwt_token_from_user(
             # settings.JWT_SECRET_KEY,
             #os.environ.get('JWT_SECRET_KEY'),
             settings.JWT_SECRET_KEY, 
-            # algorithms=settings.JWT_ALGORITHM
             algorithms=[settings.JWT_ALGORITHM]
         )
         print("PAYLOAD:", payload)
@@ -96,9 +97,7 @@ def read_jwt_token_from_user(
 @router.post("/login", tags=["Authentication"])
 def login(user_login: UserLogin, session: Session = Depends(get_db)):
     
-
     # Authenticate user
-   
     statement = select(User).where(User.email == user_login.email)
     user = session.exec(statement).first()
 
@@ -109,7 +108,6 @@ def login(user_login: UserLogin, session: Session = Depends(get_db)):
         )
     
     session.commit()
-
     return {"message": "credentials validated. Write OTP from your authenticator app."}
 
 
@@ -125,14 +123,14 @@ def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Ses
             status_code=status.HTTP_404_NOT_FOUND,
             detail = "User not found"
         )
+    
 
     if verify_otp(user.otp_secret, otpVerificationModel.otp):
         
-        print("the code is correct!")
         access_token = create_jwt_token({
             "sub_id": user.id,
             "sub_admin": user.admin,
-            "sub_email": user.email
+            "sub_email": user.email,
             })
         return {"token": access_token, "token_type": "bearer"}
     
@@ -143,9 +141,9 @@ def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Ses
             )
 
 
-"""
-code structuring the essential OTP functionalities
-"""
+
+# code structuring the essential OTP functionalities
+
 def generate_otp_uri(secret_key: str, name: str) -> str:
     totp = pyotp.TOTP(secret_key)
     uri = totp.provisioning_uri(name, issuer_name="SMaaS")
@@ -163,9 +161,9 @@ def verify_otp(secret_key: str, otp: str) -> bool:
     return totp.verify(otp)
 
 
-"""
-code structuring the token functionality
-"""
+
+# code structuring the token functionality
+
 def create_jwt_token(data_in_token: dict) -> str:
     token_data_dict = data_in_token.copy()
     expiration = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)

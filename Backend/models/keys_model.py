@@ -7,11 +7,6 @@ class Keys(SQLModel, table=True):
     user_id: str = Field(default=None)
     aes_key: str = Field(default=None)
 
-#Validation models
-class KeysCreate(BaseModel):
-    user_id: str
-    aes_key: str
-
 class KeysResponse(BaseModel):
     user_id: str
     aes_key: str

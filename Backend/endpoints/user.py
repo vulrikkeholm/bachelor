@@ -1,3 +1,6 @@
+import random
+
+from Backend.models.keys_model import Keys
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
@@ -36,7 +39,12 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
                 status_code=400,
                 detail="Email already registered"
             )
-        
+
+        aes_key = Keys(
+            user_id=User.id,
+            aes_key=aes_key_generator(),
+        )
+
         secret_key = secret_key_generator()
 
         totp_uri: str = generate_otp_uri(secret_key, create_user.name)
@@ -68,7 +76,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
 def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
     with Session(get_db) as session:
         user_from_db = session.exec(select(User).where(User.id == id)).first()
-        updated_user_info = new_user.model.dump(exclude_unset = True)
+        updated_user_info = new_user.model.dump(exclude_unset=True)
         user_from_db.sqlmodel_update(updated_user_info)
 
         session.add(user_from_db)
@@ -77,6 +85,9 @@ def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
 
         return user_from_db
 
+
+def aes_key_generator() -> str:
+    return random.getrandbits(128).to_bytes(16, 'big').hex()
 
 
 """
@@ -104,4 +115,3 @@ def get_current_user_info(current_user: User = Depends(get_current_user)):
 def get_user_chats(current_user: User = Depends(get_current_user), session: Session = Depends(get_db)):
 
 """
-    
