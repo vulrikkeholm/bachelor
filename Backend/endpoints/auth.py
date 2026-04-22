@@ -43,12 +43,8 @@ def read_jwt_token_from_user(
     try:
         payload = jwt.decode(
             credentials.credentials,
-            
-            # settings.JWT_SECRET_KEY,
-            #os.environ.get('JWT_SECRET_KEY'),
-            settings.JWT_SECRET_KEY, 
-            # algorithms=settings.JWT_ALGORITHM
-            algorithms=[settings.JWT_ALGORITHM]
+            os.environ.get('JWT_SECRET_KEY'),
+            algorithms=[os.environ.get('JWT_ALGORITHM')]
         )
         print("PAYLOAD:", payload)
 
@@ -172,7 +168,7 @@ def create_jwt_token(data_in_token: dict) -> str:
     token_data_dict.update({"exp": expiration})
     encoded_jwt_token = jwt.encode(
         token_data_dict,
-        settings.JWT_SECRET_KEY
+        os.environ.get('JWT_SECRET_KEY')
     )
     return encoded_jwt_token
 
