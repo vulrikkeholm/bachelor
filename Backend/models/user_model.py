@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 from pydantic import constr, BaseModel
 from typing import Optional
 import uuid
-from sqlalchemy import JSON
+from sqlalchemy import Column ,JSON
 
 class User(SQLModel, table=True):
     id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
