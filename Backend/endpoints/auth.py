@@ -130,7 +130,11 @@ def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Ses
             "sub_admin": bool(user.admin),
             "sub_email": user.email
             })
-        return {"token": access_token, "token_type": "bearer"}
+        return {
+            "token": access_token, 
+            "token_type": "bearer",
+            "user_id": str(user.id)
+        }
     
     else:
         raise HTTPException(
