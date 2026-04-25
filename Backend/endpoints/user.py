@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
-from pydantic import BaseModel
-from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
+from models.user_model import User, CreateUser, UserLogin
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
 from passlib.context import CryptContext
@@ -14,20 +13,10 @@ import pyotp
 router = APIRouter()
 
 
-@router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
-def get_contacts(session: Session = Depends(get_db)):
-    try:
-        users = session.exec(
-            select(User)
-        ).all()
-        print(users)
-        return users
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post("/signup", response_model=OtpUri, tags=["Users"])
+@router.post("/signup", tags=["Users"])
 def signup(create_user: CreateUser, session: Session = Depends(get_db)):
+
+
     try:
         statement = select(User).where(User.email == create_user.email)
         existing_user = session.exec(statement).first()
@@ -39,7 +28,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
         
         secret_key = secret_key_generator()
 
-        totp_uri: str = generate_otp_uri(secret_key, create_user.name)
+        totp_uri = generate_otp_uri(secret_key, create_user.name)
 
         user = User(
             email=create_user.email,
@@ -48,15 +37,11 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             otp_secret=secret_key,
         )
 
-        otpUri = OtpUri(
-            totp_uri=totp_uri
-        )
-
         session.add(user)
         session.commit()
         session.refresh(user)
 
-        return otpUri
+        return {"user" : user, "totp_uri": totp_uri}
 
     except Exception as e:
         session.rollback()

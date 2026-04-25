@@ -9,6 +9,7 @@ class Message(SQLModel, table = True):
 
 #Validation models
 class MessageCreate(BaseModel):
+    sender: str
     receiver: str
     message: str
 
