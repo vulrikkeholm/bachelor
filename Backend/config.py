@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     #JWT_SECRET_KEY: str = ""
     #JWT_ALGORITHM: str = ""
     #RESEND_KEY: str = ""
-    #ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     class Config:
         case_sensitive = True
