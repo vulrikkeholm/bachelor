@@ -1,3 +1,5 @@
+import random
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
@@ -5,14 +7,12 @@ from pydantic import BaseModel
 from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
-from passlib.context import CryptContext
-from passlib.hash import argon2
+# from passlib.context import CryptContext
+# from passlib.hash import argon2
 import uuid
 import pyotp
 
-
 router = APIRouter()
-
 
 @router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
 def get_contacts(session: Session = Depends(get_db)):
@@ -38,7 +38,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             )
         
         secret_key = secret_key_generator()
-
+        aes_key = aes_key_generator()
         totp_uri: str = generate_otp_uri(secret_key, create_user.name)
 
         user = User(
@@ -66,18 +66,18 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
 
 @router.put("/{id}", tags=["Users"])
 def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
-    with Session(get_db) as session:
-        user_from_db = session.exec(select(User).where(User.id == id)).first()
-        updated_user_info = new_user.model.dump(exclude_unset = True)
-        user_from_db.sqlmodel_update(updated_user_info)
+    user_from_db = session.exec(select(User).where(User.id == id)).first()
+    updated_user_info = new_user.model_dump(exclude_unset = True)
+    user_from_db.sqlmodel_update(updated_user_info)
 
-        session.add(user_from_db)
-        session.commit()
-        session.refresh(user_from_db)
+    session.add(user_from_db)
+    session.commit()
+    session.refresh(user_from_db)
 
-        return user_from_db
+    return user_from_db
 
-
+def aes_key_generator()-> str:
+    return random.getrandbits(128).to_bytes(16).hex()
 
 """
 def get_current_user(session: Session = Depends(get_db)):

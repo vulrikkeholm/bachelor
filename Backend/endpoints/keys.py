@@ -8,6 +8,7 @@ from models.user_model import User
 
 router = APIRouter()
 
+'''
 @router.post("/", tags=["keys"])
 async def store_aes_key(data: KeysCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
     try:
@@ -30,6 +31,7 @@ async def store_aes_key(data: KeysCreate, session: Session = Depends(get_db), cu
         session.rollback()
         raise HTTPException(
             status_code=400, detail=f"Error storing key: {str(e)}")
+'''
 
 @router.get("/", tags=["keys"])
 async def get_aes_key(session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
