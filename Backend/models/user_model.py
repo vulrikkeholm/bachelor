@@ -21,6 +21,8 @@ class CreateUser(SQLModel):
     email: str
     password: constr(min_length=8, max_length=128)
     public_key: list[int]
+    encrypted_private_key: Optional[str] = None
+    encrypted_private_key_salt: Optional[str] = None
 
 class UserLogin(SQLModel):
     email: str
