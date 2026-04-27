@@ -1,8 +1,14 @@
 import socketio
+
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://frontend.smaas.dk",
+]
+
 #Creating socketio server
 sio_server = socketio.AsyncServer(
     async_mode='asgi', #FastAPI is an ASGI application
-    cors_allowed_origins=[]
+    cors_allowed_origins= ALLOWED_ORIGINS
     #socketio_path = "sockets"
 )
 @sio_server.event
