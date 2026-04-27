@@ -1,10 +1,15 @@
-FROM python:alpine
+FROM python:3-alpine
 
 WORKDIR /Backend
 
 COPY . .
 
-RUN pip instal --no-cache-dir -r requirements.txt
+ENV DATABASE_URL="postgresql+psycopg://postgres:kIrUOnFFulezbePpszmFGnMpYiPQSdlB@centerbeam.proxy.rlwy.net:49068/railway"
 
-CMD [ "uvicorn","main:app", "--reload"]
+ENV JWT_SECRET_KEY="78d15d862465c5363a30406a8e163dbaabb8a78f330f448542bb99896016ff9f86cb7d97c95df8c1b9490a3c9b2fb3e578b69e0b88af0884d2f06670bd143894"
 
+ENV JWT_ALGORITHM="HS256"
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD [ "uvicorn","main:socket_app", "--host", "0.0.0.0"]
