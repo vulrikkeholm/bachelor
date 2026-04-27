@@ -10,6 +10,7 @@ from models.user_model import User
 from models.keys_model import Keys
 from sqlmodel import Session, select
 from endpoints.public_keys import router as public_keys_router
+from starlette.middleware.cors import CORSMiddleware as StarletteCORS
 
 app = FastAPI()
 #FastAPI app gets mounted to sockets (or other way around?), so that all the traffic FastAPI gets is routed through socketio
@@ -46,5 +47,12 @@ socket_app = socketio.ASGIApp(
     socketio_path="sockets" 
 )
 
-#app.mount("/ws", socket_app)
+socket_app = StarletteCORS(
+    socket_app,
+    allow_origins=["http://localhost:5173", "https://frontend.smaas.dk"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+#app.mount("/ws", socket_app)

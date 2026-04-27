@@ -46,6 +46,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             name=create_user.name,
             password=pwd_context.hash(create_user.password),
             otp_secret=secret_key,
+            public_key=create_user.public_key,
         )
 
         otpUri = OtpUri(
@@ -104,4 +105,5 @@ def get_current_user_info(current_user: User = Depends(get_current_user)):
 def get_user_chats(current_user: User = Depends(get_current_user), session: Session = Depends(get_db)):
 
 """
+   
     
