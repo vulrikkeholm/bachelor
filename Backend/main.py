@@ -36,8 +36,6 @@ app.include_router(public_keys_router, prefix="/keys")
 def on_startup():
     create_db_and_tables()
 
-sio_server.cors_allowed_origins = origins
-
 # Wrap FastAPI inside Socket.IO
 socket_app = socketio.ASGIApp(
     socketio_server=sio_server,
