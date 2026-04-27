@@ -5,6 +5,7 @@ sio_server = socketio.AsyncServer(
     cors_allowed_origins=[
         "http://localhost:5173",
         "https://frontend.smaas.dk",
+        "bachelor-frontend-development.up.railway.app"
     ],
     #socketio_path = "sockets"
 )

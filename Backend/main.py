@@ -20,6 +20,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "https://frontend.smaas.dk",
+    "bachelor-frontend-development.up.railway.app",
 ]
 
 app.add_middleware(
@@ -49,7 +50,7 @@ socket_app = socketio.ASGIApp(
 
 socket_app = StarletteCORS(
     socket_app,
-    allow_origins=["http://localhost:5173", "https://frontend.smaas.dk"],
+    allow_origins=["http://localhost:5173", "https://frontend.smaas.dk", "bachelor-frontend-development.up.railway.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
