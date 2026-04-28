@@ -36,12 +36,10 @@ def get_encrypted_private_key(
     session: Session = Depends(get_db),
     current_user: User = Depends(read_jwt_token_from_user)
 ):
-    if not current_user.encrypted_private_key or not current_user.encrypted_private_key_salt:
+    if not current_user.encrypted_private_key:
         raise HTTPException(
             status_code=404,
-            detail="No encrypted private key found — was this account created before key backup was added?"
+            detail="No encrypted private key found"
         )
-    return {
-        "encrypted": current_user.encrypted_private_key,
-        "salt": current_user.encrypted_private_key_salt,
-    }
+
+    return current_user.encrypted_private_key
