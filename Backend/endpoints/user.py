@@ -48,6 +48,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             otp_secret=secret_key,
             public_key=create_user.public_key,
             encrypted_private_key=create_user.encrypted_private_key,
+            encrypted_private_key_salt=create_user.encrypted_private_key_salt,
         )
 
         otpUri = OtpUri(

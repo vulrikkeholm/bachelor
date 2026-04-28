@@ -37,9 +37,9 @@ def get_encrypted_private_key(
     current_user: User = Depends(read_jwt_token_from_user)
 ):
     if not current_user.encrypted_private_key:
-        raise HTTPException(
-            status_code=404,
-            detail="No encrypted private key found"
-        )
+        raise HTTPException(status_code=404, detail="No encrypted key found")
 
-    return current_user.encrypted_private_key
+    return {
+        "encrypted": current_user.encrypted_private_key,
+        "salt": current_user.encrypted_private_key_salt,
+    }

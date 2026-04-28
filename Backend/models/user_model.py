@@ -13,17 +13,16 @@ class User(SQLModel, table=True):
     password: str = Field(default=None)
     public_key: list[str] | None = Field(default=None, sa_column=Column(JSON))
     ratchet_key: Optional[str] = Field(default=None)
-    encrypted_private_key: Optional[Dict[str, Any]] = Field(
-        default=None,
-        sa_column=Column(JSON)
-    )
+    encrypted_private_key: Optional[str] = Field(default=None)
+    encrypted_private_key_salt: Optional[str] = Field(default=None)
 
 class CreateUser(SQLModel):
     name: str
     email: str
     password: constr(min_length=8, max_length=128)
     public_key: list[int]
-    encrypted_private_key: Optional[dict] = None
+    encrypted_private_key: str
+    encrypted_private_key_salt: str
 
 class UserLogin(SQLModel):
     email: str
