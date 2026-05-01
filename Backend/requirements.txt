@@ -50,6 +50,7 @@ pluggy==1.5.0
 propcache==0.4.1
 psycopg==3.3.3
 psycopg-binary==3.3.3
+psycopg2==2.9.11
 psycopg2-binary==2.9.11
 pycparser==3.0
 pydantic==2.12.5
@@ -75,7 +76,6 @@ rich==14.3.3
 rich-toolkit==0.19.7
 rignore==0.7.6
 sentry-sdk==2.55.0
-setuptools==3.3
 shellingham==1.5.4
 simple-websocket==1.1.0
 six==1.17.0
