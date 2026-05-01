@@ -39,10 +39,15 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db), 
 
 
 @router.get("/", tags = ["messages"])
-async def get_messages(user: str, session: Session = Depends(get_db) ):
+async def get_messages(user: str, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
     #Der skal tilføjes noget så man kun henter beskeder fra en bestemt chat
     try:
-        all_messages = session.exec(select(Message).where(Message.receiver == user)).all()
+        all_messages = session.exec(
+            select(Message).where(
+                ((Message.sender == current_user.id) & (Message.receiver == user)) |
+                ((Message.sender == user) & (Message.receiver == current_user.id))
+                ).order_by(Message.id)
+        ).all()
         print(all_messages)
         return all_messages
     except Exception as e:
