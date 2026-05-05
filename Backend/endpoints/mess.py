@@ -11,6 +11,9 @@ router = APIRouter()
 
 @router.post("/", tags = ["messages"])
 async def send_message(data: MessageCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
+
+    room_id = "_".join(sorted([str(current_user.id), data.receiver]))
+
     try:
         new_msg = Message(
             sender= current_user.id,
@@ -29,9 +32,9 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db), 
                 "sender": current_user.id,
                 "receiver": data.receiver,
                 "text": data.message,
-                "room": data.receiver
+                "room": room_id
             },
-            room=data.receiver
+            room=room_id
         )
         return {"status": "sent", "id": new_msg.id} 
     except Exception as e:
