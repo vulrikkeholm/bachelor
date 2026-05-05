@@ -3,6 +3,7 @@ import socketio
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://frontend.smaas.dk",
+    "https://bachelor-frontend-development.up.railway.app",
 ]
 
 #Creating socketio server
