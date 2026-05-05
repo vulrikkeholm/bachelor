@@ -28,7 +28,7 @@ async def send_message(data: MessageCreate, session: Session = Depends(get_db), 
                 "id": new_msg.id,
                 "sender": current_user.id,
                 "receiver": data.receiver,
-                "message": data.message,
+                "text": data.message,
                 "room": data.receiver
             },
             room=data.receiver
