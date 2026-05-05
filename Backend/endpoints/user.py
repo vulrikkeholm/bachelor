@@ -47,6 +47,8 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             password=pwd_context.hash(create_user.password),
             otp_secret=secret_key,
             public_key=create_user.public_key,
+            encrypted_private_key=create_user.encrypted_private_key,
+            encrypted_private_key_salt=create_user.encrypted_private_key_salt,
         )
 
         otpUri = OtpUri(
@@ -58,7 +60,8 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
         session.refresh(user)
 
         return otpUri
-
+    except HTTPException:
+        raise
     except Exception as e:
         session.rollback()
         raise HTTPException(
