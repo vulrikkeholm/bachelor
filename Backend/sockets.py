@@ -30,8 +30,10 @@ async def chat(sid, data):
         return
 
     msg = {
-        "sid": sid, 
-        "text": data["text"],
+        "sid": sid,
+        "id": data.get("id"),
+        "sender": data.get("sender"),
+        "text": data.get("text"),
         "room": room
     }
     await sio_server.emit('chat', msg, room=room) #chat is the message type, so the frontend knows what message to display
