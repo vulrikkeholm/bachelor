@@ -1,70 +1,45 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from pydantic import BaseModel
-from db.session import get_db
 from models.user_model import User
+from db.session import get_db
 from endpoints.auth import read_jwt_token_from_user
-from typing import List
-import json
 
 router = APIRouter()
 
-class PublicKeyUpload(BaseModel):
-    publicKey: List[int]
-
-# Save current user's public key
-@router.post("/users/public-key", tags=["keys"])
-async def save_public_key(
-    body: PublicKeyUpload,
-    session: Session = Depends(get_db),
-    current_user: User = Depends(read_jwt_token_from_user)
-):
-    current_user.public_key = json.dumps(body.publicKey)
-    session.add(current_user)
-    session.commit()
-    return { "success": True }
-
-# Fetch another user's public key
-@router.get("/users/{user_id}/public-key", tags=["keys"])
-async def get_public_key(
+@router.get("/users/{user_id}/public-key", tags=["Keys"])
+def get_public_key(
     user_id: str,
     session: Session = Depends(get_db),
-    current_user: User = Depends(read_jwt_token_from_user)
+    _: User = Depends(read_jwt_token_from_user)
 ):
     user = session.exec(select(User).where(User.id == user_id)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not user.public_key:
+        raise HTTPException(status_code=404, detail="No public key registered")
+    return {"publicKey": user.public_key}
 
-    if not user or not user.public_key:
-        raise HTTPException(status_code=404, detail="Public key not found")
-
-    return { "publicKey": json.loads(user.public_key) }
-
-class RatchetKeyUpload(BaseModel):
-    receiver: str
-    publicKey: List[int]
-
-# Save ratchet public key (to be picked up by the other peer)
-@router.post("/ratchet-key", tags=["keys"])
-async def save_ratchet_key(
-    body: RatchetKeyUpload,
+# Returns the current user's own public key
+@router.get("/me/public-key", tags=["Keys"])
+def get_my_public_key(
     session: Session = Depends(get_db),
     current_user: User = Depends(read_jwt_token_from_user)
 ):
-    # Store the ratchet key on the current user's record
-    current_user.ratchet_key = json.dumps(body.publicKey)
-    session.add(current_user)
-    session.commit()
-    return { "success": True }
+    if not current_user.public_key:
+        raise HTTPException(status_code=404, detail="No public key registered")
+    return {"publicKey": current_user.public_key}
 
-# Fetch another user's ratchet public key
-@router.get("/ratchet-key/{user_id}", tags=["keys"])
-async def get_ratchet_key(
-    user_id: str,
+
+# Returns the encrypted private key blob for cross-device restore
+@router.get("/me/encrypted-private-key", tags=["Keys"])
+def get_encrypted_private_key(
     session: Session = Depends(get_db),
     current_user: User = Depends(read_jwt_token_from_user)
 ):
-    user = session.exec(select(User).where(User.id == user_id)).first()
+    if not current_user.encrypted_private_key:
+        raise HTTPException(status_code=404, detail="No encrypted key found")
 
-    if not user or not user.ratchet_key:
-        raise HTTPException(status_code=404, detail="Ratchet key not found")
-
-    return { "publicKey": json.loads(user.ratchet_key) }
+    return {
+        "encrypted": current_user.encrypted_private_key,
+        "salt": current_user.encrypted_private_key_salt,
+    }

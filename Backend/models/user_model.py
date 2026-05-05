@@ -1,7 +1,8 @@
 from sqlmodel import Field, SQLModel
 from pydantic import constr, BaseModel
-from typing import Optional
+from typing import Optional, Dict, Any
 import uuid
+from sqlalchemy import Column, JSON, Text
 
 class User(SQLModel, table=True):
     id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
@@ -10,13 +11,18 @@ class User(SQLModel, table=True):
     admin: Optional[str] = Field(default="False") # acces levels: False for private user and True for administrators
     email: str = Field(default=None, unique=True)
     password: str = Field(default=None)
-    public_key: Optional[str] = Field(default=None)
+    public_key: list[str] | None = Field(default=None, sa_column=Column(JSON))
     ratchet_key: Optional[str] = Field(default=None)
+    encrypted_private_key: Optional[str] = Field(default=None)
+    encrypted_private_key_salt: Optional[str] = Field(default=None)
 
 class CreateUser(SQLModel):
     name: str
     email: str
     password: constr(min_length=8, max_length=128)
+    public_key: list[int]
+    encrypted_private_key: str
+    encrypted_private_key_salt: str
 
 class UserLogin(SQLModel):
     email: str
@@ -33,4 +39,3 @@ class OtpUri(BaseModel):
 class OtpVerificationModel(BaseModel):
     email: str
     otp: str
-

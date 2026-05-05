@@ -80,7 +80,7 @@ def read_jwt_token_from_user(
             detail="User not found"
         )
     
-    elif user.id != sub_id or user.admin != sub_admin:
+    elif user.id != sub_id or (user.admin == "True") != sub_admin:
         raise HTTPException(
             status_code=status.HTTP_418_IM_NOT_A_TEAPOT,
             detail="I'm not a teapot"
@@ -127,10 +127,14 @@ def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Ses
         print("the code is correct!")
         access_token = create_jwt_token({
             "sub_id": user.id,
-            "sub_admin": bool(user.admin),
+            "sub_admin": user.admin == "True",
             "sub_email": user.email
             })
-        return {"token": access_token, "token_type": "bearer"}
+        return {
+            "token": access_token, 
+            "token_type": "bearer",
+            "user_id": str(user.id)
+        }
     
     else:
         raise HTTPException(
@@ -171,4 +175,3 @@ def create_jwt_token(data_in_token: dict) -> str:
         os.environ.get('JWT_SECRET_KEY')
     )
     return encoded_jwt_token
-

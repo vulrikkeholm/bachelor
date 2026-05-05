@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess
 #from socket_server import app_sio  # Socket.IO ASGI app
-from sockets  import sio_server
+from sockets  import sio_server, ALLOWED_ORIGINS
 import socketio
 from db.session import get_db
 from models.user_model import User
@@ -17,14 +17,11 @@ app = FastAPI()
 #app.mount('/', app=sio_app) #Want it mounted at the root
 # Mount Socket.IO under /ws
 #app.mount("/ws", app_sio)
-origins = [
-    "http://localhost:5173",
-    "https://frontend.smaas.dk",
-]
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -48,4 +45,3 @@ socket_app = socketio.ASGIApp(
 )
 
 #app.mount("/ws", socket_app)
-
