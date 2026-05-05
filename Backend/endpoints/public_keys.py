@@ -18,28 +18,3 @@ def get_public_key(
     if not user.public_key:
         raise HTTPException(status_code=404, detail="No public key registered")
     return {"publicKey": user.public_key}
-
-# Returns the current user's own public key
-@router.get("/me/public-key", tags=["Keys"])
-def get_my_public_key(
-    session: Session = Depends(get_db),
-    current_user: User = Depends(read_jwt_token_from_user)
-):
-    if not current_user.public_key:
-        raise HTTPException(status_code=404, detail="No public key registered")
-    return {"publicKey": current_user.public_key}
-
-
-# Returns the encrypted private key blob for cross-device restore
-@router.get("/me/encrypted-private-key", tags=["Keys"])
-def get_encrypted_private_key(
-    session: Session = Depends(get_db),
-    current_user: User = Depends(read_jwt_token_from_user)
-):
-    if not current_user.encrypted_private_key:
-        raise HTTPException(status_code=404, detail="No encrypted key found")
-
-    return {
-        "encrypted": current_user.encrypted_private_key,
-        "salt": current_user.encrypted_private_key_salt,
-    }
