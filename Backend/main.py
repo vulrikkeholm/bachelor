@@ -1,7 +1,8 @@
+from Backend.endpoints import aes_encryption_keys
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
-from endpoints import user, auth, mess, keys
+from endpoints import user, auth, mess
 #from socket_server import app_sio  # Socket.IO ASGI app
 from sockets  import sio_server
 import socketio
@@ -32,7 +33,7 @@ app.add_middleware(
 app.include_router(user.router, prefix="/users")
 app.include_router(auth.router, prefix="/auth")
 app.include_router(mess.router, prefix="/messages")
-app.include_router(keys.router, prefix="/aes-keys")
+app.include_router(aes_encryption_keys.router, prefix="/aes-keys")
 app.include_router(public_keys_router, prefix="/keys")
 
 @app.on_event("startup")
