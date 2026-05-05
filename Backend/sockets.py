@@ -3,7 +3,6 @@ import socketio
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://frontend.smaas.dk",
-    "https://bachelor-frontend-development.up.railway.app",
 ]
 
 #Creating socketio server
@@ -14,7 +13,6 @@ sio_server = socketio.AsyncServer(
 )
 @sio_server.event
 async def connect(sid, environ, auth):
-    #Måske noget user id skal tilføjes, noget sammenhæng med login
     print(f"{sid}: connected")
     await sio_server.emit('join', {'sid': sid})
 
