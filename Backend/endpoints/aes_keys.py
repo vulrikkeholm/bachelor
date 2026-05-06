@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from Backend.models.aes_keys_model import AesKeysCreate, AesKeys, AesKeysResponse
+from models.aes_keys_model import AesKeysCreate, AesKeys, AesKeysResponse
 from db.session import get_db
 from typing import List
 from endpoints.auth import read_jwt_token_from_user
