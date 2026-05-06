@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("/", tags=["keys"])
-async def store_aes_key(data: KeysCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
+async def store_aes_key(data: AesKeysCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
    
     try:
 
