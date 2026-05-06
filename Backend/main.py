@@ -1,4 +1,3 @@
-from Backend.endpoints import aes_keys
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
@@ -8,7 +7,6 @@ from sockets  import sio_server, ALLOWED_ORIGINS
 import socketio
 from db.session import get_db
 from models.user_model import User
-from Backend.models.aes_keys_model import AesKeys
 from sqlmodel import Session, select
 from endpoints.public_keys import router as public_keys_router
 
