@@ -74,6 +74,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
 
 
         session.add(user)
+        session.add(aesKeys)
         session.commit()
         session.refresh(user)
 
@@ -108,7 +109,7 @@ def derive_key():
         salt=os.urandom(16),
         iterations=ITERATION_COUNT
     )
-    return kdf.derive(password.encode())
+    return kdf.derive(password.encode()).hex()
 
 """
 def get_current_user(session: Session = Depends(get_db)):
