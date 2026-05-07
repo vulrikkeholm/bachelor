@@ -101,13 +101,14 @@ def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
 
 
 def derive_key() -> str:
+    password = os.urandom(16).hex()
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=KEY_SIZE,
         salt=os.urandom(16),
         iterations=ITERATION_COUNT
     )
-    return kdf.derive(os.urandom(16).encode())
+    return kdf.derive(password.encode())
 
 """
 def get_current_user(session: Session = Depends(get_db)):
