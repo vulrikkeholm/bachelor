@@ -63,7 +63,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
 
 
         aesKeys = AesKeys(
-            user_id = user.id
+            user_id = user.id,
             aes_key = derive_key()
         )
 
