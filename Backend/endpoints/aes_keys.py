@@ -12,14 +12,10 @@ router = APIRouter()
 @router.get("/", tags=["keys"])
 async def get_aes_key(session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
 
-    try:
-        aesKey = session.exec(select(AesKeys).where(AesKeys.user_id == current_user.id)).first()
-        keyResponse = AesKeysResponse(aes_key=aesKey.aes_key)
-        
-        if not aesKey:
-            raise HTTPException(status_code=404, detail="Key not found")
-        return keyResponse
-    
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error retrieving key: {str(e)}")
+    aesKey = session.exec(select(AesKeys).where(AesKeys.user_id == current_user.id)).first()
+
+    if not aesKey:
+        raise HTTPException(status_code=404, detail="Key not found")
+
+    return AesKeysResponse(aes_key=aesKey.aes_key)
     

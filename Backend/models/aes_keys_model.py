@@ -13,5 +13,4 @@ class AesKeysCreate(BaseModel):
     aes_key: str
 
 class AesKeysResponseModel(BaseModel):
-    user_id: str
     aes_key: str
