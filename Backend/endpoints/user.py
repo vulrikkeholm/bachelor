@@ -3,16 +3,25 @@ from sqlmodel import Session, select
 from typing import List
 from pydantic import BaseModel
 from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
+from models.aes_keys_model import AesKeys
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
 from passlib.context import CryptContext
 from passlib.hash import argon2
 import uuid
 import pyotp
+import os
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
+import base64
 
 
 router = APIRouter()
 
+ENCRYPTION_ALGORITHM = "AES"
+KEY_SIZE = 32  # 256 bits
+ITERATION_COUNT = 10000
+TAG_LENGTH = 16  # 128 bits
 
 @router.get("/contacts", response_model=List[UserResponse], tags=["Contacts"])
 def get_contacts(session: Session = Depends(get_db)):
@@ -36,7 +45,7 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
                 status_code=400,
                 detail="Email already registered"
             )
-        
+
         secret_key = secret_key_generator()
 
         totp_uri: str = generate_otp_uri(secret_key, create_user.name)
@@ -51,9 +60,18 @@ def signup(create_user: CreateUser, session: Session = Depends(get_db)):
             encrypted_private_key_salt=create_user.encrypted_private_key_salt,
         )
 
+
+
+        aesKeys = AesKeys(
+            user_id = user.id
+            aes_key = derive_key()
+        )
+
         otpUri = OtpUri(
             totp_uri=totp_uri
         )
+
+
 
         session.add(user)
         session.commit()
@@ -82,6 +100,14 @@ def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
         return user_from_db
 
 
+def derive_key() -> str:
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=KEY_SIZE,
+        salt=os.urandom(16),
+        iterations=ITERATION_COUNT
+    )
+    return kdf.derive(os.urandom(16).encode())
 
 """
 def get_current_user(session: Session = Depends(get_db)):
