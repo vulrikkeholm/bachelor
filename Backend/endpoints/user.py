@@ -100,7 +100,7 @@ def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
         return user_from_db
 
 
-def derive_key() -> str:
+def derive_key():
     password = os.urandom(16).hex()
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
