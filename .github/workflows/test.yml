@@ -25,4 +25,4 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run tests
-        run: pytest test/authentication_testing.py -v
+        run: pytest test/ -v
