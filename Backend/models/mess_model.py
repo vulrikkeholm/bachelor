@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 class Message(SQLModel, table = True):
     id: int = Field(default=None, primary_key=True)
@@ -10,9 +10,10 @@ class Message(SQLModel, table = True):
 #Validation models
 class MessageCreate(BaseModel):
     receiver: str
-    message: str
+    message: str = Field(min_length=1, max_length=100000)
 
 class MessageResponse(BaseModel):
     sender: str
     receiver: str
     message: str
+
