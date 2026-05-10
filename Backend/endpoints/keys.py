@@ -38,5 +38,7 @@ async def get_aes_key(session: Session = Depends(get_db), current_user: User = D
         if not key:
             raise HTTPException(status_code=404, detail="Key not found")
         return KeysResponse(user_id=key.user_id, aes_key=key.aes_key)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error retrieving key: {str(e)}") 
+        raise HTTPException(status_code=400, detail=f"Error retrieving key: {str(e)}")

@@ -1,13 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
-from endpoints import user, auth, mess, keys
+from endpoints import user, auth, mess, aes_keys
 #from socket_server import app_sio  # Socket.IO ASGI app
 from sockets  import sio_server, ALLOWED_ORIGINS
 import socketio
 from db.session import get_db
 from models.user_model import User
-from models.keys_model import Keys
 from sqlmodel import Session, select
 from endpoints.public_keys import router as public_keys_router
 
@@ -29,7 +28,7 @@ app.add_middleware(
 app.include_router(user.router, prefix="/users")
 app.include_router(auth.router, prefix="/auth")
 app.include_router(mess.router, prefix="/messages")
-app.include_router(keys.router, prefix="/aes-keys")
+app.include_router(aes_keys.router, prefix="/aes-keys")
 app.include_router(public_keys_router, prefix="/keys")
 
 @app.on_event("startup")
