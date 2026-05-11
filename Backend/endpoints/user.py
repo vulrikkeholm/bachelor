@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 from typing import List
 from pydantic import BaseModel
@@ -6,6 +6,7 @@ from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
 from models.aes_keys_model import AesKeys
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
+from main import limiter
 from passlib.context import CryptContext
 from passlib.hash import argon2
 import uuid
@@ -36,7 +37,8 @@ def get_contacts(session: Session = Depends(get_db)):
 
 
 @router.post("/signup", response_model=OtpUri, tags=["Users"])
-def signup(create_user: CreateUser, session: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def signup(request: Request, create_user: CreateUser, session: Session = Depends(get_db)):
     try:
         statement = select(User).where(User.email == create_user.email)
         existing_user = session.exec(statement).first()

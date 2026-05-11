@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
 from models.mess_model import MessageCreate, Message, MessageResponse
 from db.session import get_db
@@ -6,11 +6,13 @@ from typing import List, Optional
 from sockets import sio_server
 from endpoints.auth import read_jwt_token_from_user
 from models.user_model import User
+from main import limiter
 
 router = APIRouter()
 
 @router.post("/", tags = ["messages"])
-async def send_message(data: MessageCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
+@limiter.limit("60/minute")
+async def send_message(request: Request, data: MessageCreate, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user)):
 
     room_id = "_".join(sorted([str(current_user.id), data.receiver]))
 

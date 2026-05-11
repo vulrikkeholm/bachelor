@@ -76,6 +76,7 @@ rignore==0.7.6
 sentry-sdk==2.55.0
 shellingham==1.5.4
 simple-websocket==1.1.0
+slowapi==0.1.9
 six==1.17.0
 SQLAlchemy==2.0.48
 sqlmodel==0.0.37
