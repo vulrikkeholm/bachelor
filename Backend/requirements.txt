@@ -80,6 +80,7 @@ sentry-sdk==2.55.0
 setuptools==3.3
 shellingham==1.5.4
 simple-websocket==1.1.0
+slowapi==0.1.9
 six==1.17.0
 socketio==0.2.1
 SQLAlchemy==2.0.48
