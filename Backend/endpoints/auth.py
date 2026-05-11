@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
 from models.user_model import User, CreateUser, UserLogin, OtpVerificationModel
@@ -7,6 +7,7 @@ from passlib.context import CryptContext
 from passlib.hash import argon2
 from datetime import datetime, timedelta, timezone
 from config import settings
+from main import limiter
 import pyotp
 import qrcode
 import jwt
@@ -90,7 +91,8 @@ def read_jwt_token_from_user(
 
 
 @router.post("/login", tags=["Authentication"])
-def login(user_login: UserLogin, session: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(request: Request, user_login: UserLogin, session: Session = Depends(get_db)):
     
 
     # Authenticate user
@@ -110,7 +112,8 @@ def login(user_login: UserLogin, session: Session = Depends(get_db)):
 
 
 @router.post("/verify-otp", tags=["Authentication"])
-def verify_otp_endpoint(otpVerificationModel: OtpVerificationModel, session: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def verify_otp_endpoint(request: Request, otpVerificationModel: OtpVerificationModel, session: Session = Depends(get_db)):
 
     # Verify OTP for a user
     statement = select(User).where(User.email == otpVerificationModel.email)
