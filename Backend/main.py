@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess, aes_keys
+from rate_limiter import get_real_ip
 #from socket_server import app_sio  # Socket.IO ASGI app
 from sockets  import sio_server, ALLOWED_ORIGINS
 import socketio
@@ -13,18 +14,13 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 
-def get_real_ip(request: Request) -> str:
-    forwarded = request.headers.get("X-Forwarded-For")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
-    return request.client.host
 
-
-limiter = Limiter(key_func=get_real_ip)
 
 app = FastAPI()
+limiter = Limiter(key_func=get_real_ip)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 #FastAPI app gets mounted to sockets (or other way around?), so that all the traffic FastAPI gets is routed through socketio
 #app.mount('/', app=sio_app) #Want it mounted at the root
 # Mount Socket.IO under /ws
