@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db.base import create_db_and_tables
 from endpoints import user, auth, mess, aes_keys
-from rate_limiter import get_real_ip
+from rate_limiter import limiter
 #from socket_server import app_sio  # Socket.IO ASGI app
 from sockets  import sio_server, ALLOWED_ORIGINS
 import socketio
@@ -10,14 +10,13 @@ from db.session import get_db
 from models.user_model import User
 from sqlmodel import Session, select
 from endpoints.public_keys import router as public_keys_router
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 
 
 
 app = FastAPI()
-limiter = Limiter(key_func=get_real_ip)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

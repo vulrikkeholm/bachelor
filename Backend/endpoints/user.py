@@ -6,7 +6,7 @@ from models.user_model import User, CreateUser, UserLogin, UserResponse, OtpUri
 from models.aes_keys_model import AesKeys
 from db.session import get_db
 from endpoints.auth import generate_otp_uri, secret_key_generator, pwd_context
-from main import limiter
+from rate_limiter import limiter
 from passlib.context import CryptContext
 from passlib.hash import argon2
 import uuid

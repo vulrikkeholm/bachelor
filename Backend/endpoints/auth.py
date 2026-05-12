@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from passlib.hash import argon2
 from datetime import datetime, timedelta, timezone
 from config import settings
-from main import limiter
+from rate_limiter import limiter
 import pyotp
 import qrcode
 import jwt
