@@ -6,7 +6,7 @@ from typing import List, Optional
 from sockets import sio_server
 from endpoints.auth import read_jwt_token_from_user
 from models.user_model import User
-from main import limiter
+from rate_limiter import limiter
 
 router = APIRouter()
 
