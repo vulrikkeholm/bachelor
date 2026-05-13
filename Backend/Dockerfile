@@ -5,8 +5,8 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # Create the user
-RUN addgroup --gid $USER_GID $USERNAME \
-    && adduser --uid $USER_UID --gid $USER_GID -m $USERNAME 
+RUN addgroup -g $USER_GID $USERNAME \
+    && adduser -u $USER_UID -G $USER_GID -s /bin/sh -D $USERNAME 
 
 WORKDIR /Backend
 
