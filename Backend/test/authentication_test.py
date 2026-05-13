@@ -96,6 +96,8 @@ class TestSignup:
             "email": "alice@example.com",
             "password": "alicepassword",
             "public_key": [1, 2, 3],
+            "encrypted_private_key": "enc_key",
+            "encrypted_private_key_salt": "salt",
         })
         assert res.status_code == 200
         data = res.json()
@@ -109,6 +111,8 @@ class TestSignup:
             "email": "alice@example.com",
             "password": "alicepassword",
             "public_key": [1, 2, 3],
+            "encrypted_private_key": "enc_key",
+            "encrypted_private_key_salt": "salt",
         })
         assert res.status_code == 400
         assert "already registered" in res.json()["detail"].lower()
@@ -224,9 +228,9 @@ class TestJwtValidation:
         # 401/403 would indicate the JWT was rejected; any other code means auth passed
         assert res.status_code not in (401, 403)
 
-    def test_missing_auth_header_returns_403(self, client):
+    def test_missing_auth_header_returns_401(self, client):
         res = client.get(self._PROTECTED)
-        assert res.status_code == 403
+        assert res.status_code == 401
 
     def test_malformed_token_rejected(self, client):
         res = client.get(self._PROTECTED, headers={"Authorization": "Bearer not.a.valid.token"})
@@ -315,6 +319,8 @@ class TestFullAuthFlow:
             "email": "bob@example.com",
             "password": "bobpassword1",
             "public_key": [10, 20, 30],
+            "encrypted_private_key": "enc_key",
+            "encrypted_private_key_salt": "salt",
         })
         assert signup_res.status_code == 200
         totp_uri = signup_res.json()["totp_uri"]
