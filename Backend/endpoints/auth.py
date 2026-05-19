@@ -152,8 +152,6 @@ code structuring the essential OTP functionalities
 def generate_otp_uri(secret_key: str, name: str) -> str:
     totp = pyotp.TOTP(secret_key)
     uri = totp.provisioning_uri(name, issuer_name="SMaaS")
-    
-    QR_code = qrcode.make(uri)
 
     return uri
 

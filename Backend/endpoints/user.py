@@ -62,8 +62,6 @@ def signup(request: Request, create_user: CreateUser, session: Session = Depends
             encrypted_private_key_salt=create_user.encrypted_private_key_salt,
         )
 
-
-
         aesKeys = AesKeys(
             user_id = user.id,
             aes_key = derive_key()
@@ -72,8 +70,6 @@ def signup(request: Request, create_user: CreateUser, session: Session = Depends
         otpUri = OtpUri(
             totp_uri=totp_uri
         )
-
-
 
         session.add(user)
         session.add(aesKeys)
@@ -90,6 +86,7 @@ def signup(request: Request, create_user: CreateUser, session: Session = Depends
 
 
 @router.put("/{id}", tags=["Users"])
+"""
 def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
     with Session(get_db) as session:
         user_from_db = session.exec(select(User).where(User.id == id)).first()
@@ -101,6 +98,7 @@ def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
         session.refresh(user_from_db)
 
         return user_from_db
+"""
 
 
 def derive_key():
@@ -112,31 +110,3 @@ def derive_key():
         iterations=ITERATION_COUNT
     )
     return kdf.derive(password.encode()).hex()
-
-"""
-def get_current_user(session: Session = Depends(get_db)):
-    user = session.exec(select(User).where(User.email == user.email)).first()
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-    return user
-
-
-@router.get("/me", tags=["Users"])
-def get_current_user_info(current_user: User = Depends(get_current_user)):
-    
-    Get the current logged-in user's information.
-    Requires authentication via JWT token.
-    
-    return current_user
-
-
-
-@router.get("/chats", response_model = List[chats], tags = ["Chats"])
-def get_user_chats(current_user: User = Depends(get_current_user), session: Session = Depends(get_db)):
-
-"""
-   
-    

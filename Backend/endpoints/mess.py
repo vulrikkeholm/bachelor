@@ -26,7 +26,7 @@ async def send_message(request: Request, data: MessageCreate, session: Session =
         session.add(new_msg)
         session.commit()
         session.refresh(new_msg)
-        #For at gøre beskeder real time
+        #Making messages real-time
         await sio_server.emit(
             "chat",
             {
@@ -47,7 +47,6 @@ async def send_message(request: Request, data: MessageCreate, session: Session =
 
 @router.get("/", tags = ["messages"])
 async def get_messages(user: str, session: Session = Depends(get_db), current_user: User = Depends(read_jwt_token_from_user), after: Optional[int]=None):
-    #Der skal tilføjes noget så man kun henter beskeder fra en bestemt chat
     try:
         query = select(Message).where(
             ((Message.sender == current_user.id) & (Message.receiver == user)) |
@@ -69,7 +68,6 @@ async def delete_messages(user: str, session: Session = Depends(get_db), current
     try:
         messages = session.exec(
             select(Message).where(
-                #Tjek at den kun sletter beskeder når modtager har hentet dem
                 ((Message.sender == current_user.id) & (Message.receiver == user)) |
                 ((Message.sender == user) & (Message.receiver == current_user.id))
             )

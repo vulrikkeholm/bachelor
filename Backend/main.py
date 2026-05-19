@@ -14,17 +14,9 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 
-
-
 app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-#FastAPI app gets mounted to sockets (or other way around?), so that all the traffic FastAPI gets is routed through socketio
-#app.mount('/', app=sio_app) #Want it mounted at the root
-# Mount Socket.IO under /ws
-#app.mount("/ws", app_sio)
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,5 +42,3 @@ socket_app = socketio.ASGIApp(
     other_asgi_app=app,       
     socketio_path="sockets" 
 )
-
-#app.mount("/ws", socket_app)
