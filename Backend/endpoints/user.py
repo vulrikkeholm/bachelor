@@ -84,9 +84,9 @@ def signup(request: Request, create_user: CreateUser, session: Session = Depends
         raise HTTPException(
             status_code=400, detail=f"Error creating user: {str(e)}")
 
-
-@router.put("/{id}", tags=["Users"])
 """
+@router.put("/{id}", tags=["Users"])
+
 def update_user(id: str, new_user: User, session: Session = Depends(get_db)):
     with Session(get_db) as session:
         user_from_db = session.exec(select(User).where(User.id == id)).first()
