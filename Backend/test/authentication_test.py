@@ -1,8 +1,3 @@
-"""
-Authentication tests for the FastAPI backend.
-
-Runs against an isolated in-memory SQLite database — no external services needed.
-"""
 
 import os
 
