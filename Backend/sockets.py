@@ -9,7 +9,6 @@ ALLOWED_ORIGINS = [
 sio_server = socketio.AsyncServer(
     async_mode='asgi', #FastAPI is an ASGI application
     cors_allowed_origins= ALLOWED_ORIGINS
-    #socketio_path = "sockets"
 )
 @sio_server.event
 async def connect(sid, environ, auth):
