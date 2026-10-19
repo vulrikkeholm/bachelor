@@ -1,4 +1,7 @@
 # <span style="color:#211a52">AAU Bachelor - Secure Messaging System</span>
+
+This repository contains the code for a secure messaging system developed as a bachelor's project at Aalborg University (AAU). The project focuses on creating a backend for secure communication, with emphasis on authentication, secure message handling, and API-based communication. It is designed as a practical software engineering project that explores how a secure messaging system can be implemented and evaluated in a real-world setting.
+
 ### Backend
 
 1. Navigate to the backend folder:
